@@ -20,6 +20,20 @@ import '../App.css';
 //Logo image
 import Logo from '../static/Logo.png';
 
+function Copyright() {
+    return (
+        <Typography variant="body2" color="textSecondary" align="center">
+            {'Copyright © '}
+            <Link color="inherit" href="https://material-ui.com/">
+                Your Website
+            </Link>
+            {' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
+    );
+}
+
 
 class SignIn extends React.Component {
 
@@ -29,11 +43,9 @@ class SignIn extends React.Component {
     }
 
     // handle SignUp event
-    ChangeToSignUpPage = formSubmitEvent => {
-        formSubmitEvent.preventDefault();
-        formSubmitEvent.preventDefault();
+    ChangeToSignUpPage = () => {
         this.setState(
-            {isSignUp : true}
+            { isSignUp: true }
         )
     }
 
@@ -41,67 +53,64 @@ class SignIn extends React.Component {
     render() {
         return (
             <div>
-                {
-                    !this.state.isSignUp ?
-                        (
-                            <Container component="main" maxWidth="xs">
-                                <CssBaseline />
-                                <div>
-                                    <img className="Logo" src={Logo} alt="just4u logo"/>
-                                    <Typography component="h1" variant="h5" className="Logo">
-                                        Sign in
-                                    </Typography>
-                                    <form >
-                                        <TextField
-                                            required
-                                            variant="outlined"
-                                            margin="normal"
-                                            fullWidth
-                                            id="email"
-                                            label="Email Address"
-                                            name="email"
-                                        />
-                                        <TextField
-                                            required
-                                            variant="outlined"
-                                            margin="normal"
-                                            fullWidth
-                                            name="password"
-                                            label="Password"
-                                            type="password"
-                                            id="password"
-                                        />
-                                        <FormControlLabel
-                                            control={<Checkbox value="remember" color="primary" />}
-                                            label="Remember me"
-                                        />
-                                        <Button
-                                            type="submit"
-                                            fullWidth
-                                            variant="contained"
-                                            color="primary"
-                                        >
-                                            Sign In
-                                        </Button>
-                                        <p></p>
-                                        <Grid container className="justify-content-md-center">
-                                            <Grid item xs>
-                                                <Link href="#" variant="body2">
-                                                    Forgot password?
-                                                </Link>
-                                            </Grid>
-                                            <Grid item>
-                                                <Link href="#" onClick={this.ChangeToSignUpPage} variant="body2">
-                                                    {"Don't have an account? Sign Up"}
-                                                </Link>
-                                            </Grid>
-                                        </Grid>
-                                    </form>
-                                </div>
-                            </Container>
-                      ) :
-                        <SignUp />
-            }
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <div>
+                        <img className="Logo" src={Logo} />
+                        <Typography component="h1" variant="h5" className="Logo">
+                            Sign in
+                        </Typography>
+                        <form >
+                            <TextField
+                                required
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                            />
+                            <TextField
+                                required
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                            />
+                            <FormControlLabel
+                                control={<Checkbox value="remember" color="primary" />}
+                                label="Remember me"
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                            >
+                                Sign In
+                            </Button>
+                            <p></p>
+                            <Grid container className="justify-content-md-center">
+                                <Grid item xs>
+                                    <Link className="buttonOption" variant="body2">
+                                        Forgot password?
+                                    </Link>
+                                </Grid>
+                                <Grid item>
+                                    <Link className="buttonOption" variant="body2" href="/signup">
+                                        {"Don't have an account? Sign Up"}
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                        </form>
+                    </div>
+                    <Box mt={8}>
+                        <Copyright />
+                    </Box>
+                </Container>
             </div>
         );
     }
