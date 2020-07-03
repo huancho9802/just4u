@@ -8,13 +8,7 @@ const session = require("express-session");
 const passport = require("passport");
 const fs = require("fs");
 const https = require("https");
-const flash = require("connect-flash");
 const cookieParser = require("cookie-parser");
-var rootCas = require("ssl-root-cas/latest").create();
-
-// default for all https requests
-// (whether using https directly, request, or another module)
-https.globalAgent.options.ca = rootCas;
 
 const db = require("./db/database.js");
 
@@ -27,7 +21,6 @@ app.use(cors());
 app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(flash());
 app.set("view engine", "pug");
 
 // initialize session

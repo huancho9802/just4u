@@ -20,7 +20,7 @@ const authStrategies = () => {
     // Local Strategy
     passport.use(
       new LocalStrategy({ usernameField: 'email', passwordField: 'password' },
-        function(req, email, password, done) {
+        function(email, password, done) {
         User.findOne({ email }, (err, user) => {
           console.log("User " + email + " attempted to sign in.")
           if (err) {

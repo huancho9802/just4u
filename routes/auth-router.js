@@ -38,7 +38,7 @@ const sendVerifyIdOrResetCode = (user, plain, type) => {
     {
       from: process.env.NODEMAILER_USERNAME,
       to: user.email,
-      subject: "just4u Verification ID",
+      subject: `just4u ${type}`,
       text: `Hi ${user.firstName},\n\nYour one-time ${type} is ${plain} (if you did not request this, please ignore).\n\nThank you,\n\njust4u Team`,
     },
     function (error, info) {
@@ -51,50 +51,47 @@ const sendVerifyIdOrResetCode = (user, plain, type) => {
   );
 };
 
-authRouter.get('/', (req, res) => {
-    return res.json({isAuthenticated: req.isAuthenticated()})
-})
+authRouter.get("/", (req, res) => {
+  if (!req.user) {
+    return res.json({ isAuthenticated: req.isAuthenticated() });
+  }
+  return res.json({
+    isAuthenticated: req.isAuthenticated(),
+    isVerified: req.user.verification.verified,
+  });
+});
 
 // sign in
 authRouter.use("/signin", (req, res, next) =>
   ensureUnauthenticated(req, res, next)
 );
 
-authRouter
-  .route("/signin")
-  .get((req, res) => {
-    res.status(200).json({ message: "Sign In" });
-  })
-  .post((req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+authRouter.post("/signin", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({ message: info.message });
+    }
+    req.login(user, (err) => {
       if (err) {
         return next(err);
       }
-      if (!user) {
-        return res.status(401).json({ message: info.message });
-      }
-      req.login(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-        user.lastSignedIn = new Date();
-        user.save();
-        if (!user.verification.verified) {
-          res.redirect("/api/v1/auth/verify?email=" + user.email); // redirect to verify
-        }
-        return res.status(200).json({ message: "Successful sign in" });
+      user.lastSignedIn = new Date();
+      user.save();
+      return res.status(200).json({
+        message: "Successful sign in",
+        isVerified: user.verification.verified,
       });
-    })(req, res, next);
-  });
+    });
+  })(req, res, next);
+});
 
 // sign up
 authRouter.use("/signup", (req, res, next) =>
   ensureUnauthenticated(req, res, next)
 );
-
-authRouter.get("/signup", (req, res) => {
-  res.status(200).json({ message: "Sign Up" });
-});
 
 authRouter.post(
   "/signup",
@@ -103,9 +100,7 @@ authRouter.post(
       if (err) {
         return next(err);
       } else if (user) {
-        return res
-          .status(400)
-          .json({ message: "User with this email already exists" });
+        return res.status(400).json({ message: "Email already taken" });
       } else {
         bcrypt.hash(req.body.password, saltRounds, function (error, hash) {
           // hash the inputted password
@@ -122,6 +117,8 @@ authRouter.post(
                 verifyId: bcrypt.hashSync(plainVerifyId, saltRounds),
               },
               wantToReset: false,
+              oldPasswords: [],
+              service: "local",
             },
             (e) => {
               if (e) {
@@ -144,7 +141,7 @@ authRouter.post(
       if (!user) {
         return res
           .status(400)
-          .json({ message: "An error occured during signup: user not found" });
+          .json({ message: "An error occured during signup" });
       }
       // send verification ID
       sendVerifyIdOrResetCode(
@@ -152,7 +149,7 @@ authRouter.post(
         res.locals.plainVerifyId,
         "verification ID"
       );
-      res.redirect("/api/v1/auth/verify?email=" + user.email); // redirect to verify
+      res.status(201).json({ message: "Signup successful" });
     });
   }
 );
@@ -162,18 +159,8 @@ authRouter.use("/verify", (req, res, next) =>
   ensureAuthenticated(req, res, next)
 );
 
-authRouter.get("/verify", (req, res) => {
-  return res
-    .status(200)
-    .json({
-      message:
-        "Signup successful. Please enter the verification ID sent to " +
-        req.query.email,
-    });
-});
-
 authRouter.post("/verify", (req, res) => {
-  User.findOne({ email: req.query.email }, (err, user) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
       return console.error(err);
     }
@@ -192,7 +179,7 @@ authRouter.post("/verify", (req, res) => {
         user.verification.verified = true;
         user.verification.verifyId = undefined;
         user.save();
-        return res.status(200).json({ message: "Verification success" });
+        return res.status(200).json({ message: "Verification successful" });
       }
     });
   });
@@ -226,107 +213,94 @@ authRouter.get(
   (req, res, next) => ensureAuthenticated(req, res, next),
   (req, res) => {
     req.logout();
+    console.log("Signed out");
     return res.status(200).json({ message: "User signed out" });
   }
 );
 
-// forget password
-
-authRouter.get("/reset-password", (req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.status(200).json({ message: "Please enter your email" });
-  }
-});
-
+// reset password
 authRouter.post("/reset-password", (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
       return console.error(err);
     }
-    if (!user || user.resetCodeSent) {
-      // no user or reset code already sent
+    if (!user) {
+      // no user
       return res.status(400).json({ message: "Invalid email" });
     }
-    // generate new verification ID
-    let resetCode = shortid.generate();
-    user.resetCode = bcrypt.hashSync(resetCode, saltRounds);
-    user.resetCodeSent = true;
+    if (user.service !== "local") {
+      // non-local user
+      return res.status(400).json({ message: "Email already used for third-party authentication" });
+    }
+    // generate new reset code
+    let plainResetCode = shortid.generate();
+    user.resetCode = bcrypt.hashSync(plainResetCode, saltRounds);
     user.wantToReset = true;
     user.save();
-    sendVerifyIdOrResetCode(user, resetCode, "code to reset password");
-    return res.redirect(
-      "/api/v1/auth/confirm-reset-code?id=" + user._id + "&resend=false"
-    );
+    sendVerifyIdOrResetCode(user, plainResetCode, "code to reset password");
+    return res.json({ message: "Reset code sent" });
   });
 });
 
-authRouter.get("/confirm-reset-code", (req, res) => {
-  if (req.query.resend === "false") {
-    return res
-      .status(200)
-      .json({ message: "Please enter the reset code sent to you" });
-  } else if (req.query.resend === "true") {
-    User.findOne({ _id: req.query.id }, (err, user) => {
+// confirm reset code
+authRouter.post("/confirm-reset-code", (req, res) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) {
+      return console.error(err);
+    }
+    if (!user || !user.wantToReset || !user.resetCode) {
+      // no user or wrong reset statuss
+      return res.status(400).json({ message: "Invalid email" });
+    }
+    // check reset code
+    bcrypt.compare(req.body.resetCode, user.resetCode, (err, result) => {
       if (err) {
         return console.error(err);
       }
-      if (!user) {
-        return res.status(400).json({ message: "Invalid path" });
+      if (!result) {
+        return res.status(400).json({ message: "Invalid reset code" });
+      } else {
+        // delete reset code
+        user.resetCode = undefined;
+        user.oldPasswords.push(user.password);
+        user.save();
+        return res.status(200).json({ message: "Correct reset code" });
       }
-      // generate new reset code to resend
-      let resetCode = shortid.generate();
-      user.resetCode = bcrypt.hashSync(resetCode, saltRounds);
-      user.save();
-      sendVerifyIdOrResetCode(user, resetCode, "code to reset password");
-      return res.redirect(
-        "/api/v1/auth/confirm-reset-code?id=" + user._id + "&resend=false"
-      );
     });
-  } else {
-    return res.status(400).json({ message: "Invalid path" });
-  }
+  });
 });
 
 // new password
-authRouter.get("/new-password", (req, res) => {
-  User.findOne({ _id: req.query.id }, (err, user) => {
-    if (err) {
-      return console.error(err);
-    }
-    if (!user || user.resetCode || !user.wantToReset) {
-      // still have reset code or incorrect id or dont want to reset
-      return res.status(400).json({ message: "Invalid path" });
-    }
-    return res.status(200).json({ message: "Please enter new password" });
-  });
-});
-
 authRouter.post("/new-password", (req, res) => {
-  User.findOne({ _id: req.query.id }, (err, user) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
       return console.error(err);
     }
     if (!user || user.resetCode || !user.wantToReset) {
-      // still have reset code or incorrect id or dont want to reset
+      // still have reset code or incorrect email or dont want to reset
       return res.status(400).json({ message: "Invalid path" });
     }
-    bcrypt.compare(req.body.newPassword, user.password, (err, result) => {
-      if (err) {
-        return console.error(err);
-      }
+    // check if new password is the same as old ones
+    newPassDifferent = 1; // initial value
+    user.oldPasswords.forEach((oldPassword) => {
+      let result = bcrypt.compareSync(req.body.newPassword, oldPassword);
       if (result) {
-        return res
-          .status(400)
-          .json({
-            message: "New password must be different from the previous one",
-          });
+        newPassDifferent = newPassDifferent * 0;
       } else {
-        user.password = bcrypt.hashSync(req.body.newPassword, saltRounds);
-        user.wantToReset = false;
-        user.save();
-        return res.status(201).json({ message: "New password created" });
+        newPassDifferent = newPassDifferent * 1;
       }
     });
+    // return values for 2 different cases
+    if (newPassDifferent === 0) {
+      return res.status(400).json({
+        message: "New password must be different from used ones",
+      });
+    } else {
+      user.password = bcrypt.hashSync(req.body.newPassword, saltRounds);
+      user.wantToReset = false;
+      user.save();
+      return res.status(201).json({ message: "New password created" });
+    }
   });
 });
 
