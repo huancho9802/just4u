@@ -5,7 +5,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Home from "./components/Home";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
-import Dashboard from "./components/Dashboard";
+import Paperbase from "./components/Paperbase";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import ForgotPassword from "./components/ForgotPassword";
@@ -190,9 +190,9 @@ class App extends React.Component {
               exact
             />
             <PrivateRoute
-              component={Dashboard}
+              component={Paperbase}
               isAuth={this.state.isAuthenticated}
-              path="/dashboard"
+              path="/home"
             />
             <Route>
               <h1>404 Not Found</h1>
