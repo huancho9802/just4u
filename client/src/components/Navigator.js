@@ -114,7 +114,7 @@ class Navigator extends React.Component {
           >
             Navigation
           </ListItem>
-          <Link to={`/home`} style={{ textDecoration: "none" }}>
+          <Link to={`/0`} style={{ textDecoration: "none" }}>
             <ListItem
               className={clsx(classes.item, classes.itemCategory, active === "" && classes.itemActiveItem)}
               button
@@ -156,7 +156,7 @@ class Navigator extends React.Component {
                 </ListItemText>
               </ListItem>
               {children.map(({ id: childId, icon, to }) => (
-                <Link to={`/home/${to}`} style={{ textDecoration: "none" }}>
+                <Link to={`/0/${to}`} style={{ textDecoration: "none" }} key={childId}>
                   <ListItem
                     key={childId}
                     button

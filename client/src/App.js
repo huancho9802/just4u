@@ -192,7 +192,7 @@ class App extends React.Component {
             <PrivateRoute
               component={Paperbase}
               isAuth={this.state.isAuthenticated}
-              path="/home"
+              path="/0"
             />
             <Route>
               <h1>404 Not Found</h1>
