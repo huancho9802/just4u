@@ -12,7 +12,7 @@ const path = require('path');
 const db = require("./db/database.js");
 
 const app = express();
-const serverPort = process.env.PORT || 3000;
+const serverPort = process.env.PORT || 5000;
 
 // middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,8 +39,6 @@ app.use(passport.session());
 // handle db errorn
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
 
 // load routes
 app.get("/", (req, res) => {
@@ -75,9 +73,15 @@ app.use((req, res, next) => {
   return res.status(404).send("404 Not Found");
 });
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.resolve(__dirname+'/client/build/index.html'));
-});
+// production mode
+if (process.env.NODE_ENV === 'production') {
+  // Serve any static files
+  app.use(express.static(path.join(__dirname, 'client/build')));
+// Handle React routing, return all requests to React app
+  app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  });
+}
 
 app.listen(serverPort, function () {
   console.log(
