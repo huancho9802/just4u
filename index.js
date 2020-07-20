@@ -6,8 +6,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const session = require("express-session");
 const passport = require("passport");
-const path = require("path");
 const cookieParser = require("cookie-parser");
+const path = require('path');
 
 const db = require("./db/database.js");
 
