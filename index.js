@@ -6,14 +6,13 @@ const cors = require("cors");
 const helmet = require("helmet");
 const session = require("express-session");
 const passport = require("passport");
-const fs = require("fs");
-const https = require("https");
 const cookieParser = require("cookie-parser");
+const path = require('path');
 
 const db = require("./db/database.js");
 
 const app = express();
-const serverPort = process.env.PORT || 5000;
+const serverPort = process.env.PORT || 3000;
 
 // middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,7 +20,7 @@ app.use(cors());
 app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.set("view engine", "pug");
+
 
 // initialize session
 app.set("trust proxy", 1); // trust first proxy
@@ -41,7 +40,6 @@ app.use(passport.session());
 // handle db errorn
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// load routes
 app.get("/", (req, res) => {
   res.send("Hello App");
 });
@@ -74,16 +72,13 @@ app.use((req, res, next) => {
   return res.status(404).send("404 Not Found");
 });
 
-https
-  .createServer(
-    {
-      key: fs.readFileSync(process.env.SSL_KEY),
-      cert: fs.readFileSync(process.env.SSL_CERT),
-    },
-    app
-  )
-  .listen(serverPort, function () {
-    console.log(
-      `App listening on port ${serverPort}! Go to https://localhost:${serverPort}/`
-    );
-  });
+app.use(express.static(path.join(__dirname, "build")));
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+app.listen(serverPort, function () {
+  console.log(
+    `App listening on port ${serverPort}! Go to http://localhost:${serverPort}/`
+  );
+});
