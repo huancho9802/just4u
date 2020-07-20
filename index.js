@@ -7,7 +7,7 @@ const helmet = require("helmet");
 const session = require("express-session");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
-const path = require('path');
+const path = require("path");
 
 const db = require("./db/database.js");
 
@@ -39,16 +39,8 @@ app.use(passport.session());
 // handle db errorn
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// production mode
-if (process.env.NODE_ENV === 'production') {
-  // Serve any static files
-  app.use(express.static(path.join(__dirname, 'client/build')));
-// Handle React routing, return all requests to React app
-  app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
-}
-
+// Serve any static files
+app.use(express.static(path.join(__dirname, "client/build")));
 
 // load routes
 app.get("/", (req, res) => {
@@ -59,6 +51,11 @@ const apiRouter_v1 = require("./routes/api-router-v1.js");
 const authStrategies = require("./auth/auth.js");
 authStrategies(); // use authentication strategies
 app.use("/api/v1", apiRouter_v1); // use /api router
+
+// Handle React routing, return all requests to React app
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
 
 // other errors handling middleware
 app.use((err, req, res, next) => {
@@ -77,13 +74,6 @@ app.use((err, req, res, next) => {
   }
   res.status(errCode).type("txt").send(errMessage);
 });
-
-// handle 404
-app.use((req, res, next) => {
-  return res.status(404).send("404 Not Found");
-});
-
-
 
 app.listen(serverPort, function () {
   console.log(
