@@ -194,6 +194,9 @@ class App extends React.Component {
               isAuth={this.state.isAuthenticated}
               path="/0"
             />
+            <Route>
+              <h1>404 Not Found</h1>
+            </Route>
           </Switch>
         </div>
       </BrowserRouter>
