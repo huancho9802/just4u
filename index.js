@@ -75,7 +75,7 @@ app.use((req, res, next) => {
   return res.status(404).send("404 Not Found");
 });
 
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
