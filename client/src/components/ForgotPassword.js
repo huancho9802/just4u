@@ -75,7 +75,7 @@ class ForgotPassword extends React.Component {
       .post("/auth/reset-password", {
         email: this.state.email,
       })
-      .then((response) => {
+      .then(() => {
         alert(`New reset code sent to ${this.state.email}`);
       })
       .catch((err) => {
