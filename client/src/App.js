@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 //import component
-import Home from "./components/Home";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Paperbase from "./components/Paperbase";
@@ -139,7 +138,15 @@ class App extends React.Component {
           <Switch>
             <PublicRoute
               isAuth={this.state.isAuthenticated}
-              component={Home}
+              component={(props) => (
+                <SignIn
+                  {...props}
+                  onSuccess={this.successSignIn}
+                  onError={this.errorSignIn}
+                  message={this.state.messageSignIn}
+                  messageColor={this.state.messageSignInColor}
+                />
+              )}
               path="/"
               exact
             />
@@ -158,20 +165,7 @@ class App extends React.Component {
               path="/forgot-password"
               exact
             />
-            <PublicRoute
-              isAuth={this.state.isAuthenticated}
-              component={(props) => (
-                <SignIn
-                  {...props}
-                  onSuccess={this.successSignIn}
-                  onError={this.errorSignIn}
-                  message={this.state.messageSignIn}
-                  messageColor={this.state.messageSignInColor}
-                />
-              )}
-              path="/signin"
-              exact
-            />
+
             <PublicRoute
               isAuth={this.state.isAuthenticated}
               component={(props) => (

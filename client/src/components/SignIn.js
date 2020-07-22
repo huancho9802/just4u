@@ -11,6 +11,9 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import Paper from "@material-ui/core/Paper";
+import { withStyles } from "@material-ui/core/styles";
+import PropTypes from 'prop-types';
 
 //Additional stylesheet
 import "../App.css";
@@ -24,6 +27,41 @@ import Logo from "../static/Logo.png";
 // import api
 import api from "../api/api.js";
 
+// styling
+const styles = (theme) => ({
+  root: {
+    height: "100vh",
+  },
+  image: {
+    backgroundImage:
+      "url(https://cdn.pixabay.com/photo/2017/02/12/14/00/justice-2060093_960_720.jpg)",
+    backgroundRepeat: "no-repeat",
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+});
+
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
@@ -32,7 +70,7 @@ class SignIn extends React.Component {
       password: "",
       stage: "signin",
       showPassword: false,
-      verificationError: ""
+      verificationError: "",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -84,104 +122,124 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { showPassword, email, password, verificationError, stage } = this.state;
-    const messageColor = this.props.messageColor;
+    const {
+      showPassword,
+      email,
+      password,
+      verificationError,
+      stage,
+    } = this.state;
+    const { messageColor, classes } = this.props;
 
     if (stage === "verification") {
       return (
         <div>
-          <Verify email={email} error={verificationError} onError={this.errorVerification} onSuccess={this.successVerification}/>
+          <Verify
+            email={email}
+            error={verificationError}
+            onError={this.errorVerification}
+            onSuccess={this.successVerification}
+          />
         </div>
       );
     }
 
     return (
-      <div>
-        {
-          <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div>
-              <img className="Logo" src={Logo} alt="just4u logo" />
-              <Typography
-                component="h1"
-                variant="h5"
-                style={{
-                  display: "block",
-                  margin: "auto",
-                  textAlign: "center",
-                }}
-              >
-                Sign In
-              </Typography>
-              <Typography
-                component="h2"
-                variant="body2"
-                id="message"
-                style={{
-                  color: messageColor,
-                }}
-              >
-                {this.props.message}
-              </Typography>
-
-              <form onSubmit={this.handleSubmit}>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  value={email}
-                  onChange={this.handleChange}
-                />
-                <TextField
-                  id="password"
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={this.handleChange}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => this.handleClickShowPassword()}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
+      <Grid container component="main" className={classes.root}>
+        <CssBaseline />
+        <Grid item xs={false} sm={4} md={7} className={classes.image} />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <div className={classes.paper}>
+            <Container component="main" maxWidth="xs">
+              <CssBaseline />
+              <div>
+                <img className="Logo" src={Logo} alt="just4u logo" />
+                <Typography
+                  component="h1"
+                  variant="h5"
+                  style={{
+                    display: "block",
+                    margin: "auto",
+                    textAlign: "center",
                   }}
-                />
-                <p></p>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
                 >
                   Sign In
-                </Button>
-                <p></p>
-                <Grid container className="justify-content-md-center">
-                  <Grid item xs>
-                    <Link to="/forgot-password">Forgot password</Link>
+                </Typography>
+                <Typography
+                  component="h2"
+                  variant="body2"
+                  id="message"
+                  style={{
+                    color: messageColor,
+                  }}
+                >
+                  {this.props.message}
+                </Typography>
+
+                <form onSubmit={this.handleSubmit}>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    value={email}
+                    onChange={this.handleChange}
+                  />
+                  <TextField
+                    id="password"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={this.handleChange}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => this.handleClickShowPassword()}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  <p></p>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                  >
+                    Sign In
+                  </Button>
+                  <p></p>
+                  <Grid container className="justify-content-md-center">
+                    <Grid item xs>
+                      <Link to="/forgot-password">Forgot password</Link>
+                    </Grid>
+                    <Grid item>
+                      <Link to="/signup">Don't have an account? Sign Up</Link>
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    <Link to="/signup">Don't have an account? Sign Up</Link>
-                  </Grid>
-                </Grid>
-              </form>
-            </div>
-          </Container>
-        }
-      </div>
+                </form>
+              </div>
+            </Container>
+          </div>
+        </Grid>
+      </Grid>
     );
   }
 }
-export default SignIn;
+
+SignIn.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(SignIn);

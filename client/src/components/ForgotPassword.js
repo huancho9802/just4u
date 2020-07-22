@@ -266,7 +266,7 @@ class ForgotPassword extends React.Component {
                     )}
                   </Grid>
                   <Grid item>
-                    <Link to="/signin">Sign In</Link>
+                    <Link to="/">Sign In</Link>
                   </Grid>
                 </Grid>
               </ValidatorForm>

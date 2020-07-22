@@ -120,7 +120,7 @@ class SignUp extends React.Component {
     } = this.state;
 
     if (this.state.success) {
-      return <Redirect to="/signin" />
+      return <Redirect to="/" />
     }
 
     return (
@@ -265,7 +265,7 @@ class SignUp extends React.Component {
                 <Grid container justify="flex-end">
                   <Grid item>
                     <Link
-                      to="/signin"
+                      to="/"
                       onClick={this.ChangeToSignInPage}
                       variant="body2"
                     >
