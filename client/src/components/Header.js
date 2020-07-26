@@ -12,7 +12,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
-import Link from "react-router-dom/Link";
+import { Link } from "react-router-dom";
 
 const lightColor = "rgba(255, 255, 255, 0.7)";
 
@@ -38,8 +38,14 @@ const styles = (theme) => ({
   },
 });
 
+
 function Header(props) {
   const { classes, onDrawerToggle } = props;
+  const title =
+    window.location.pathname === "/0"
+      ? "Dashboard"
+      : window.location.pathname.slice(3, 4).toUpperCase() +
+        window.location.pathname.slice(4);
 
   return (
     <React.Fragment>
@@ -65,7 +71,10 @@ function Header(props) {
                   color="inherit"
                   className={classes.iconButtonAvatar}
                 >
-                  <Link to="/0/user" style={{ textDecoration: "none", color: "#FFF" }}>
+                  <Link
+                    to="/0/user"
+                    style={{ textDecoration: "none", color: "#FFF" }}
+                  >
                     <PersonIcon />
                   </Link>
                 </IconButton>
@@ -85,23 +94,11 @@ function Header(props) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Authentication
+                {title}
               </Typography>
             </Grid>
           </Grid>
         </Toolbar>
-      </AppBar>
-      <AppBar
-        component="div"
-        className={classes.secondaryBar}
-        color="primary"
-        position="static"
-        elevation={0}
-      >
-        <Tabs value={0} textColor="inherit">
-          <Tab textColor="inherit" label="Profile" />
-          <Tab textColor="inherit" label="Settings" />
-        </Tabs>
       </AppBar>
     </React.Fragment>
   );

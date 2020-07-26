@@ -210,7 +210,6 @@ authRouter.post("/resend-verifyId", (req, res) => {
 // logout
 authRouter.get(
   "/signout",
-  (req, res, next) => ensureAuthenticated(req, res, next),
   (req, res) => {
     req.logout();
     console.log("Signed out");

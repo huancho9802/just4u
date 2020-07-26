@@ -25,7 +25,7 @@ const categories = [
   {
     id: "Your Stuff",
     children: [
-      { id: "User Profile", icon: <PersonIcon />, to: "user" },
+      { id: "User", icon: <PersonIcon />, to: "user" },
       { id: "Cases", icon: <BriefcaseIcon />, to: "cases" },
       { id: "Events", icon: <EventIcon />, to: "events" },
       { id: "Tasks", icon: <TaskIcon />, to: "tasks" },
@@ -88,7 +88,7 @@ class Navigator extends React.Component {
     api
       .get("/auth/signout")
       .then(() => {
-        window.location.reload();
+        window.location.pathname = "/";
       })
       .catch((err) => {
         console.error(err);

@@ -79,7 +79,6 @@ class App extends React.Component {
   successSignIn() {
     this.setState({
       isAuthenticated: true,
-      isVerified: true,
       messageSignIn: "",
       messageSignInColor: "",
     });
