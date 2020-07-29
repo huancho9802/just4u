@@ -28,8 +28,9 @@ app.use(
     name: "sessionId",
     secret: process.env.SESSION_SECRET,
     resave: true,
+    rolling: true,
     saveUninitialized: true,
-    cookie: { path: "/", httpOnly: true, secure: true, sameSite: true },
+    cookie: { path: "/", httpOnly: true, secure: true, sameSite: true, maxAge: 15 * 1000 },
   })
 );
 

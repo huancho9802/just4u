@@ -208,14 +208,12 @@ authRouter.post("/resend-verifyId", (req, res) => {
 });
 
 // logout
-authRouter.get(
-  "/signout",
-  (req, res) => {
-    req.logout();
-    console.log("Signed out");
-    return res.status(200).json({ message: "User signed out" });
-  }
-);
+authRouter.get("/signout", (req, res) => {
+  req.logout();
+  req.session.destroy((err) => console.error(err));
+  res.clearCookie("connect.sid");
+  return res.status(200).json({ message: "User signed out" });
+});
 
 // reset password
 authRouter.post("/reset-password", (req, res) => {
@@ -229,7 +227,9 @@ authRouter.post("/reset-password", (req, res) => {
     }
     if (user.service !== "local") {
       // non-local user
-      return res.status(400).json({ message: "Email already used for third-party authentication" });
+      return res
+        .status(400)
+        .json({ message: "Email already used for third-party authentication" });
     }
     // generate new reset code
     let plainResetCode = shortid.generate();

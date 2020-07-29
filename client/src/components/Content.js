@@ -39,7 +39,9 @@ const styles = (theme) => ({
 class Content extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: true
+    };
   }
 
   render() {
