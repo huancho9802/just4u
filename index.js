@@ -8,6 +8,7 @@ const session = require("express-session");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const MongoStore = require("connect-mongo")(session);
 
 const db = require("./db/database.js");
 
@@ -31,8 +32,20 @@ app.use(
     name: "sessionId",
     secret: process.env.SESSION_SECRET,
     resave: true,
+    rolling: true,
     saveUninitialized: true,
-    cookie: { path: "/", httpOnly: true, secure: true, sameSite: true, maxAge: 15 * 60 * 1000 },
+    store: new MongoStore({
+      mongooseConnection: db,
+      autoRemove: "native",
+      collection: "sessions",
+    }),
+    cookie: {
+      path: "/",
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+      maxAge: 15 * 60 * 1000,
+    },
   })
 );
 
