@@ -14,6 +14,9 @@ const db = require("./db/database.js");
 const app = express();
 const serverPort = process.env.PORT || 5000;
 
+// handle db error
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+
 // middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -28,17 +31,13 @@ app.use(
     name: "sessionId",
     secret: process.env.SESSION_SECRET,
     resave: true,
-    rolling: true,
     saveUninitialized: true,
-    cookie: { path: "/", httpOnly: true, secure: true, sameSite: true, maxAge: 15 * 1000 },
+    cookie: { path: "/", httpOnly: true, secure: true, sameSite: true, maxAge: 15 * 60 * 1000 },
   })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-// handle db errorn
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // Serve any static files
 app.use(express.static(path.join(__dirname, "client/build")));

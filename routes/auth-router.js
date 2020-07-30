@@ -209,9 +209,14 @@ authRouter.post("/resend-verifyId", (req, res) => {
 
 // logout
 authRouter.get("/signout", (req, res) => {
-  req.logout();
-  req.session.destroy((err) => console.error(err));
-  res.clearCookie("connect.sid");
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      req.logout();
+    }
+  });
+  res.clearCookie("sessionId");
   return res.status(200).json({ message: "User signed out" });
 });
 
