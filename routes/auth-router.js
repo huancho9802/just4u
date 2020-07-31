@@ -211,13 +211,14 @@ authRouter.post("/resend-verifyId", (req, res) => {
 authRouter.get("/signout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      console.error(err);
+      return console.error(err);
     } else {
       req.logout();
+      req.session = null;
+      res.clearCookie("sessionId");
+      return res.status(200).json({ message: "User signed out" });
     }
   });
-  res.clearCookie("sessionId");
-  return res.status(200).json({ message: "User signed out" });
 });
 
 // reset password

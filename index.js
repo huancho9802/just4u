@@ -33,7 +33,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     rolling: true,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: new MongoStore({
       mongooseConnection: db,
       autoRemove: "native",
