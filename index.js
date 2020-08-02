@@ -32,12 +32,12 @@ app.use(
     name: "sessionId",
     secret: process.env.SESSION_SECRET,
     resave: false,
-    rolling: true,
     saveUninitialized: false,
     store: new MongoStore({
       mongooseConnection: db,
       autoRemove: "native",
       collection: "sessions",
+      secret: process.env.SESSION_STORE_SECRET,
     }),
     cookie: {
       path: "/",
