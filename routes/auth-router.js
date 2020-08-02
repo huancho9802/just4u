@@ -135,7 +135,7 @@ authRouter.post(
     });
   },
   (req, res) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
+    User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
       if (err) {
         return console.error(err);
       }
@@ -192,7 +192,7 @@ authRouter.use("/resend-verifyId", (req, res, next) =>
 );
 
 authRouter.post("/resend-verifyId", (req, res) => {
-  User.findOne({ email: req.body.email }, (err, user) => {
+  User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
     if (err) {
       return console.error(err);
     }

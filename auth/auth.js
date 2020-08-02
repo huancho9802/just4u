@@ -23,7 +23,7 @@ const authStrategies = () => {
       { usernameField: "email", passwordField: "password" },
       function (email, password, done) {
         User.findOne({ email: email.toLowerCase() }, (err, user) => {
-          console.log("User " + email + " attempted to sign in.");
+          console.log("User " + email.toLowerCase() + " attempted to sign in.");
           if (err) {
             return done(err);
           }
