@@ -111,7 +111,7 @@ authRouter.post(
           User.create(
             {
               ...req.body,
-              email: email.toLowerCase(),
+              email: req.body.email.toLowerCase(),
               password: hash,
               verification: {
                 verified: false,
