@@ -96,7 +96,7 @@ authRouter.use("/signup", (req, res, next) =>
 authRouter.post(
   "/signup",
   (req, res, next) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
+    User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
       if (err) {
         return next(err);
       } else if (user) {

@@ -15,6 +15,7 @@ import Logo from "../static/Logo.png";
 
 // import api
 import api from "../api/api.js";
+import AuthContext from "../context/AuthContext";
 
 class Verify extends React.Component {
   constructor(props) {
@@ -26,6 +27,8 @@ class Verify extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  static contextType = AuthContext;
+
   handleChange(event) {
     event.preventDefault();
     const name = event.target.name;
@@ -34,6 +37,7 @@ class Verify extends React.Component {
   }
 
   handleSubmit(event) {
+    const { dispatch } = this.context;
     event.preventDefault();
     api
       .post("/auth/verify", {
@@ -45,6 +49,7 @@ class Verify extends React.Component {
           response.data.message + ". Click OK to continue to your Dashboard."
         );
         this.props.onSuccess();
+        dispatch({ type: "SIGNIN" });
       })
       .catch((err) => {
         console.error(err);
@@ -65,8 +70,8 @@ class Verify extends React.Component {
         alert("An error occurred");
       });
   }
- 
-  render() { 
+
+  render() {
     const { verifyId } = this.state;
 
     return (
