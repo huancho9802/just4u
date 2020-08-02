@@ -111,6 +111,7 @@ authRouter.post(
           User.create(
             {
               ...req.body,
+              email: email.toLowerCase(),
               password: hash,
               verification: {
                 verified: false,
@@ -223,7 +224,7 @@ authRouter.get("/signout", (req, res) => {
 
 // reset password
 authRouter.post("/reset-password", (req, res) => {
-  User.findOne({ email: req.body.email }, (err, user) => {
+  User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
     if (err) {
       return console.error(err);
     }
@@ -249,7 +250,7 @@ authRouter.post("/reset-password", (req, res) => {
 
 // confirm reset code
 authRouter.post("/confirm-reset-code", (req, res) => {
-  User.findOne({ email: req.body.email }, (err, user) => {
+  User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
     if (err) {
       return console.error(err);
     }
@@ -277,7 +278,7 @@ authRouter.post("/confirm-reset-code", (req, res) => {
 
 // new password
 authRouter.post("/new-password", (req, res) => {
-  User.findOne({ email: req.body.email }, (err, user) => {
+  User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
     if (err) {
       return console.error(err);
     }
