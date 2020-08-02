@@ -1,10 +1,13 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 
-const PublicRoute = ({component: Component, isAuth, restricted, ...rest}) => {
+const PublicRoute = ({component: Component, restricted, ...rest}) => {
+    const { store } = React.useContext(AuthContext)
+
     return (
         <Route {...rest} render={props => (
-            isAuth ?
+            store.isAuthenticated ?
                 <Redirect to="/0" />
             : <Component {...props} />
         )} />

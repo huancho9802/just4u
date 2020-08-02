@@ -13,7 +13,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 //Additional stylesheet
 import "../App.css";
@@ -26,6 +26,7 @@ import Logo from "../static/Logo.png";
 
 // import api
 import api from "../api/api.js";
+import AuthContext from "../context/AuthContext";
 
 // styling
 const styles = (theme) => ({
@@ -78,6 +79,8 @@ class SignIn extends React.Component {
     this.errorVerification = this.errorVerification.bind(this);
   }
 
+  static contextType = AuthContext;
+
   handleChange(event) {
     event.preventDefault();
     const name = event.target.name;
@@ -87,6 +90,7 @@ class SignIn extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    const { dispatch } = this.context;
     api
       .post("/auth/signin", {
         email: this.state.email,
@@ -96,6 +100,7 @@ class SignIn extends React.Component {
         console.log(response.data.message);
         if (response.data.isVerified) {
           this.props.onSuccess();
+          dispatch({ type: "SIGNIN" });
         } else {
           this.setState({ stage: "verification" });
         }

@@ -12,13 +12,13 @@ import ForgotPassword from "./components/ForgotPassword";
 import "./App.css";
 
 import api from "./api/api";
+import AuthContext from "./context/AuthContext";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
-      isAuthenticated: false,
       messageSignIn: "",
       messageSignInColor: "",
       errorMessageForgotPassword: "",
@@ -43,28 +43,23 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    const { dispatch } = this.context;
     // handling authentication and verified status upon mounting
     api
       .get("/auth") // get server info
       .then((response) => {
         // if user is verified
         if (response.data.isVerified) {
-          this.setState({ isAuthenticated: true }, () => {
-            this.setState({ loading: false });
-          });
+          this.setState({ loading: false }, dispatch({ type: "SIGNIN" }));
         } else if (!response.data.isAuthenticated) {
           // if user is not signed in
-          this.setState({ isAuthenticated: false }, () => {
-            this.setState({ loading: false });
-          });
+          this.setState({ loading: false }, dispatch({ type: "SIGNOUT" }));
         } else if (response.data.isAuthenticated && !response.data.isVerified) {
           // signed in but unverified
           api
             .get("/auth/signout") // auto sign out user if not verified
             .then((response) => {
-              this.setState({ isAuthenticated: false }, () => {
-                this.setState({ loading: false });
-              });
+              this.setState({ loading: false }, dispatch({ type: "SIGNOUT" }));
             })
             .catch((err) => {
               console.error(err);
@@ -78,7 +73,6 @@ class App extends React.Component {
 
   successSignIn() {
     this.setState({
-      isAuthenticated: true,
       messageSignIn: "",
       messageSignInColor: "",
     });
@@ -136,7 +130,6 @@ class App extends React.Component {
         <div>
           <Switch>
             <PublicRoute
-              isAuth={this.state.isAuthenticated}
               component={(props) => (
                 <SignIn
                   {...props}
@@ -150,7 +143,6 @@ class App extends React.Component {
               exact
             />
             <PublicRoute
-              isAuth={this.state.isAuthenticated}
               component={(props) => (
                 <ForgotPassword
                   {...props}
@@ -166,7 +158,6 @@ class App extends React.Component {
             />
 
             <PublicRoute
-              isAuth={this.state.isAuthenticated}
               component={(props) => (
                 <SignUp
                   {...props}
@@ -182,11 +173,7 @@ class App extends React.Component {
               path="/signup"
               exact
             />
-            <PrivateRoute
-              component={Paperbase}
-              isAuth={this.state.isAuthenticated}
-              path="/0"
-            />
+            <PrivateRoute component={Paperbase} path="/0" />
             <Route path="/api">
               <h1>Access Denied</h1>
             </Route>
@@ -199,5 +186,7 @@ class App extends React.Component {
     );
   }
 }
+
+App.contextType = AuthContext;
 
 export default App;
