@@ -31,6 +31,7 @@ app.use(
   session({
     name: "sessionId",
     secret: process.env.SESSION_SECRET,
+    rolling: true,
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({
