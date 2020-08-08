@@ -1,22 +1,45 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const ContactSchema = new Schema(
+  {
+    firstName: String,
+    lastName: String,
+    email: String,
+    phoneNumber: String,
+    relationship: String,
+  }
+)
+
+const CaseSchema = new Schema(
+  {
+      name: String,
+      type: String,
+      status: String,
+      contact: [ContactSchema],
+      legalArea: String,
+      description: String,
+  }
+)
+
 const User = new Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
+    firstName: String,
+    lastName: String,
+    email: String,
+    password: String,
     city: String,
-    state: { type: String, required: true },
+    state: String,
     verification: {
       verified: Boolean,
       verifyId: String,
     },
+    cases: [CaseSchema],
+    contacts: [ContactSchema],
     wantToReset: Boolean,
-    service: { type: String, required: true },
+    service: String,
     resetCode: String,
-    oldPasswords: { type: Array, required: true },
+    oldPasswords: Array,
     lastSignedIn: Date,
   },
   { timestamps: true }
