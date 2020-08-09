@@ -26,7 +26,7 @@ import Logo from "../static/Logo.png";
 
 // import api
 import api from "../api/api.js";
-import AuthContext from "../context/AuthContext";
+import AppContext from "../context/AppContext";
 
 // styling
 const styles = (theme) => ({
@@ -79,7 +79,7 @@ class SignIn extends React.Component {
     this.errorVerification = this.errorVerification.bind(this);
   }
 
-  static contextType = AuthContext;
+  static contextType = AppContext;
 
   handleChange(event) {
     event.preventDefault();

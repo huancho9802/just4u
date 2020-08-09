@@ -12,13 +12,12 @@ import ForgotPassword from "./components/ForgotPassword";
 import "./App.css";
 
 import api from "./api/api";
-import AuthContext from "./context/AuthContext";
+import AppContext from "./context/AppContext";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
       messageSignIn: "",
       messageSignInColor: "",
       errorMessageForgotPassword: "",
@@ -50,16 +49,19 @@ class App extends React.Component {
       .then((response) => {
         // if user is verified
         if (response.data.isVerified) {
-          this.setState({ loading: false }, dispatch({ type: "SIGNIN" }));
+          dispatch({ type: "SIGNIN" }); // turn isAuthenticated to true
+          dispatch({ type: "LOADING_FALSE" }); // turn loading to false
         } else if (!response.data.isAuthenticated) {
           // if user is not signed in
-          this.setState({ loading: false }, dispatch({ type: "SIGNOUT" }));
+          dispatch({ type: "SIGNOUT" }); // turn isAuthenticated to false
+          dispatch({ type: "LOADING_FALSE" }); // turn loading to false
         } else if (response.data.isAuthenticated && !response.data.isVerified) {
           // signed in but unverified
           api
             .get("/auth/signout") // auto sign out user if not verified
             .then((response) => {
-              this.setState({ loading: false }, dispatch({ type: "SIGNOUT" }));
+              dispatch({ type: "SIGNOUT" }); // turn isAuthenticated to false
+              dispatch({ type: "LOADING_FALSE" }); // turn loading to false
             })
             .catch((err) => {
               console.error(err);
@@ -122,9 +124,14 @@ class App extends React.Component {
 
   // Render app page
   render() {
-    if (this.state.loading) {
+    const { store } = this.context;
+
+    // if loading = true
+    if (store.loading) {
       return <h1>Loading...</h1>;
     }
+
+    // if loading = false
     return (
       <BrowserRouter>
         <div>
@@ -187,6 +194,7 @@ class App extends React.Component {
   }
 }
 
-App.contextType = AuthContext;
+// Apply the context AppContext to App component
+App.contextType = AppContext;
 
 export default App;

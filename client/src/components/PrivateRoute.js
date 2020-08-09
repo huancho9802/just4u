@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
+import AppContext from '../context/AppContext';
 
 const PrivateRoute = ({component: Component, ...rest}) => {
-    const { store } = React.useContext(AuthContext)
+    const { store } = React.useContext(AppContext)
 
     return (
 

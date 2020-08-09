@@ -1,27 +1,41 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ContactSchema = new Schema(
-  {
-    firstName: String,
-    lastName: String,
-    email: String,
-    phoneNumber: String,
-    relationship: String,
-  }
-)
+// Schema for Task
+const TaskSchema = new Schema({
+  firstName: String,
+  lastName: String,
+  email: String,
+  phoneNumber: String,
+  relationship: String,
+  additionalInfo: String,
+});
 
-const CaseSchema = new Schema(
-  {
-      name: String,
-      type: String,
-      status: String,
-      contact: [ContactSchema],
-      legalArea: String,
-      description: String,
-  }
-)
+// Schema for Contact
+const ContactSchema = new Schema({
+  firstName: String,
+  lastName: String,
+  email: String,
+  phoneNumber: String,
+  relationship: String,
+  additionalInfo: String,
+  homeAddress: String,
+  city: String,
+  state: String,
+});
 
+// Schema for Case
+const CaseSchema = new Schema({
+  name: String,
+  type: String,
+  status: String,
+  contact: [ContactSchema],
+  legalArea: String,
+  description: String,
+  additionalComments: String,
+});
+
+// Schema for User
 const User = new Schema(
   {
     firstName: String,
@@ -45,5 +59,5 @@ const User = new Schema(
   { timestamps: true }
 );
 
+// export user schema as a model
 module.exports = mongoose.model("users", User);
-
