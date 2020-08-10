@@ -29,7 +29,7 @@ const CaseSchema = new Schema({
   name: String,
   type: String,
   status: String,
-  contact: [ContactSchema],
+  contacts: Array,
   legalArea: String,
   description: String,
   additionalComments: String,
