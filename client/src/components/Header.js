@@ -74,4 +74,4 @@ Header.propTypes = {
   onDrawerToggle: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(Header); 
+export default withStyles(styles)(Header);  

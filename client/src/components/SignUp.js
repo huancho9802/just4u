@@ -27,6 +27,7 @@ class SignUp extends React.Component {
     this.state = {
       success: false,
       firstName: this.props.prevFirstName,
+      middleName: this.props.prevMiddleNameName,
       lastName: this.props.prevLastName,
       email: this.props.prevEmail,
       password: "",
@@ -81,12 +82,20 @@ class SignUp extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const { email, password, firstName, lastName, state } = this.state;
+    const {
+      email,
+      password,
+      firstName,
+      middleName,
+      lastName,
+      state,
+    } = this.state;
     api
       .post("/auth/signup", {
         email,
         password,
         firstName,
+        middleName,
         lastName,
         state,
       })
@@ -102,6 +111,7 @@ class SignUp extends React.Component {
           err.response.data.message,
           email,
           firstName,
+          middleName,
           lastName,
           state
         );
@@ -114,13 +124,14 @@ class SignUp extends React.Component {
       email,
       password,
       firstName,
+      middleName,
       lastName,
       state,
       showPassword,
     } = this.state;
 
     if (this.state.success) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
 
     return (
@@ -129,7 +140,7 @@ class SignUp extends React.Component {
           <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div>
-              <img className="Logo" src={Logo} alt="just4u logo" />
+              <img className="Logo" src={Logo} alt="just4u logo"/>
               <Typography
                 component="h1"
                 variant="h5"
@@ -168,6 +179,18 @@ class SignUp extends React.Component {
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
+                    <TextValidator
+                      autoComplete="mname"
+                      name="middleName"
+                      variant="outlined"
+                      fullWidth
+                      id="middleName"
+                      label="Middle Name/Initial"
+                      value={middleName}
+                      onChange={this.handleChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
                     <TextValidator
                       variant="outlined"
                       fullWidth

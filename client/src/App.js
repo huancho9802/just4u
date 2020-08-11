@@ -27,6 +27,7 @@ class App extends React.Component {
         message: "",
         prevEmail: "",
         prevFirstName: "",
+        prevMiddleName: "",
         prevLastName: "",
         prevState: "",
       },
@@ -92,18 +93,20 @@ class App extends React.Component {
         message: "",
         prevEmail: "",
         prevFirstName: "",
+        prevMiddleName: "",
         prevLastName: "",
         prevState: "",
       },
     });
   }
 
-  errorSignUp(message, prevEmail, prevFirstName, prevLastName, prevState) {
+  errorSignUp(message, prevEmail, prevFirstName, prevMiddleName, prevLastName, prevState) {
     this.setState({
       signUpError: {
         message,
         prevEmail,
         prevFirstName,
+        prevMiddleName,
         prevLastName,
         prevState,
       },
@@ -173,6 +176,7 @@ class App extends React.Component {
                   message={this.state.signUpError.message}
                   prevEmail={this.state.signUpError.prevEmail}
                   prevFirstName={this.state.signUpError.prevFirstName}
+                  prevMiddleName={this.state.signUpError.prevMiddleName}
                   prevLastName={this.state.signUpError.prevLastName}
                   prevState={this.state.signUpError.prevState}
                 />

@@ -14,6 +14,7 @@ const TaskSchema = new Schema({
 // Schema for Contact
 const ContactSchema = new Schema({
   firstName: String,
+  middleName: String,
   lastName: String,
   email: String,
   phoneNumber: String,
@@ -27,9 +28,10 @@ const ContactSchema = new Schema({
 // Schema for Case
 const CaseSchema = new Schema({
   name: String,
-  type: String,
   status: String,
-  contacts: Array,
+  contactsInvolved: [Number],
+  attorneys: [Number],
+  type: String,
   legalArea: String,
   description: String,
   additionalComments: String,
@@ -39,7 +41,9 @@ const CaseSchema = new Schema({
 const User = new Schema(
   {
     firstName: String,
+    middleName: String,
     lastName: String,
+    phoneNumber: String,
     email: String,
     password: String,
     city: String,
