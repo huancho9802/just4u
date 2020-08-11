@@ -117,7 +117,7 @@ class Verify extends React.Component {
                 <p></p>
                 <Grid container className="justify-content-md-center">
                   <Grid item>
-                    <Link to="/signin" onClick={() => this.resendId()}>
+                    <Link to="/" onClick={() => this.resendId()}>
                       Resend verification ID
                     </Link>
                   </Grid>
