@@ -25,31 +25,35 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// initialize session
-app.set("trust proxy", 1); // trust first proxy
-app.use(
-  session({
-    name: "sessionId",
-    secret: process.env.SESSION_SECRET,
-    rolling: true,
-    resave: false,
-    saveUninitialized: false,
-    store: new MongoStore({
-      mongooseConnection: db,
-      autoRemove: "native",
-      collection: "sessions",
-      secret: process.env.SESSION_STORE_SECRET,
-    }),
-    cookie: {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: true,
-      maxAge: 15 * 60 * 1000,
-    },
-  })
-);
+// session options
+var options = {
+  name: "sessionId",
+  secret: process.env.SESSION_SECRET,
+  rolling: true,
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: db,
+    autoRemove: "native",
+    collection: "sessions",
+    secret: process.env.SESSION_STORE_SECRET,
+  }),
+  cookie: {
+    path: "/",
+    httpOnly: true,
+    sameSite: true,
+    maxAge: 15 * 60 * 1000,
+  },
+};
 
+// production mode
+if (app.get("env") === "production") {
+  app.set("trust proxy", 1); // trust first proxy
+  sess.cookie.secure = true; // serve secure cookies
+}
+
+// initialize session
+app.use(session(options));
 app.use(passport.initialize());
 app.use(passport.session());
 
