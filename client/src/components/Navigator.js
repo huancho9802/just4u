@@ -17,6 +17,7 @@ import TaskIcon from "@material-ui/icons/FormatListBulleted";
 import CalendarIcon from "@material-ui/icons/CalendarToday";
 import ContactsIcon from "@material-ui/icons/Contacts";
 import SignoutIcon from "@material-ui/icons/ExitToApp";
+import NotesIcon from '@material-ui/icons/Note';
 
 // import api
 import api from "../api/api.js";
@@ -29,8 +30,9 @@ const categories = [
       { id: "Cases", icon: <BriefcaseIcon />, to: "cases" },
       { id: "Events", icon: <EventIcon />, to: "events" },
       { id: "Tasks", icon: <TaskIcon />, to: "tasks" },
-      { id: "Calendar", icon: <CalendarIcon />, to: "calendar" },
+      { id: "Notes", icon: <NotesIcon />, to: "notes" },
       { id: "Contacts", icon: <ContactsIcon />, to: "contacts" },
+      { id: "Calendar", icon: <CalendarIcon />, to: "calendar" },
     ],
   },
 ];

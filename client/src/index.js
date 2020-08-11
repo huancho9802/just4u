@@ -2,17 +2,24 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import AuthContext, { authReducer } from "./context/AuthContext";
+import AppContext, { reducer } from "./context/AppContext";
+
+// initial state
+const initialState = {
+  isAuthenticated: false,
+  loading: true,
+  user: undefined,
+}
 
 // Main Component
 function Main() {
   // initialize the store and dispatch features 
-  const [store, dispatch] = React.useReducer(authReducer, { isAuthenticated: false });
+  const [store, dispatch] = React.useReducer(reducer, initialState);
 
   return (
-    <AuthContext.Provider value={{ store, dispatch }}>
+    <AppContext.Provider value={{ store, dispatch }}>
       <App />
-    </AuthContext.Provider>
+    </AppContext.Provider>
   );
 }
 

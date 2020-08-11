@@ -5,16 +5,9 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import PersonIcon from "@material-ui/icons/AccountCircle";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
 import Toolbar from "@material-ui/core/Toolbar";
-import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
-
-const lightColor = "rgba(255, 255, 255, 0.7)";
 
 const styles = (theme) => ({
   secondaryBar: {
@@ -22,19 +15,6 @@ const styles = (theme) => ({
   },
   menuButton: {
     marginLeft: -theme.spacing(1),
-  },
-  iconButtonAvatar: {
-    padding: 4,
-  },
-  link: {
-    textDecoration: "none",
-    color: lightColor,
-    "&:hover": {
-      color: theme.palette.common.white,
-    },
-  },
-  button: {
-    borderColor: lightColor,
   },
 });
 
@@ -65,21 +45,6 @@ function Header(props) {
               </Grid>
             </Hidden>
             <Grid item xs />
-            <Grid item>
-              <Tooltip title="User Page">
-                <IconButton
-                  color="inherit"
-                  className={classes.iconButtonAvatar}
-                >
-                  <Link
-                    to="/0/user"
-                    style={{ textDecoration: "none", color: "#FFF" }}
-                  >
-                    <PersonIcon />
-                  </Link>
-                </IconButton>
-              </Tooltip>
-            </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
@@ -109,4 +74,4 @@ Header.propTypes = {
   onDrawerToggle: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(Header);
+export default withStyles(styles)(Header);  
