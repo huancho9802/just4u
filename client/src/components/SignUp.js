@@ -140,7 +140,7 @@ class SignUp extends React.Component {
           <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div>
-              <img className="Logo" src={Logo} alt="just4u logo"/>
+              <img className="LogoSignUp" src={Logo} alt="just4u logo"/>
               <Typography
                 component="h1"
                 variant="h5"
