@@ -15,7 +15,7 @@ const db = require("./db/database.js");
 const app = express();
 const serverPort = process.env.PORT || 5000;
 
-// handle db error
+// handle db errorsess
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // middlewares
@@ -49,7 +49,7 @@ var options = {
 // production mode
 if (app.get("env") === "production") {
   app.set("trust proxy", 1); // trust first proxy
-  sess.cookie.secure = true; // serve secure cookies
+  options.cookie.secure = true; // serve secure cookies
 }
 
 // initialize session
