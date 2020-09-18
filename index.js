@@ -77,6 +77,6 @@ app.get("*", function (req, res) {
 
 app.listen(serverPort, function () {
   console.log(
-    `App listening on port ${serverPort}! Go to http://localhost:${serverPort}/`
+    `App listening on port ${serverPort}!`
   );
 });
